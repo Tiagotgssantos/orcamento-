@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f6;
+    }
+
+    #logo img {
+      display: block;
+      margin-left: 5%;
+      margin-top: 15px;
+      width: 150px;
+      height: auto;
+      border-radius: 50%;
+    }
+
+    .container-form {
+      margin: 0 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #formulario {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #product-form {
+      width: 300px;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none; /* Inicialmente escondido */
+      z-index: 1000;
+    }
+
+    #product-form fieldset {
+      border: none;
+      padding: 0;
+    }
+
+    #product-form legend {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    #product-form label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    #product-form input[type="text"],
+    #product-form input[type="number"] {
+      width: calc(100% - 16px);
+      padding: 6px;
+      margin-bottom: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    #product-form button {
+      display: block;
+      padding: 6px 12px;
+      font-size: 0.9em;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    #product-form button:hover {
+      background-color: #0056b3;
+    }
+
+    #items-table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 1.1em;
+    }
+
+    #items-table th,
+    #items-table td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      text-align: center;
+    }
+
+    #items-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    #total-container {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    #print-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      padding: 1px 30px;
+      font-size: 0.9em;
+      color: #fff;
+      background-color: #28a745;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border-radius: 10%;
+    }
+
+    #print-button:hover {
+      background-color: #218838;
+    }
+
+    #print-button img {
+      width: 45px;
+    }
+
+    #budget-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .container2 {
+      margin: 0 10px;
+    }
+
+    #show-form-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 6px 12px;
+      font-size: 0.9em;
+      color: #fff;
+      background-color: #0d6dd4;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: -70px;
+    }
+
+    #show-form-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Estilo para o fundo opaco do modal */
+    #modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none; /* Inicialmente escondido */
+      z-index: 999;
+    }
+
+    /* Estilos para impressão */
+    @media print {
+      #product-form {
+        display: none;
+      }
+
+      #print-button {
+        display: none;
+      }
+
+      #items-table {
+        display: table;
+      }
+
+      #logo {
+        display: block;
+      }
+
+      #logo img {
+        position: relative;
+      }
+
+      #budget-title {
+        display: block;
+      }
+      #show-form-button{
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 800px) {
+      .container-form {
+        margin-top: 80px;
+      }
+
+      #product-form {
+        margin-top: 20px;
+      }
+
+      #items-table {
+        font-size: 0.9em;
+        /* Reduz o tamanho da fonte em telas menores */
+      }
+
+      #items-table th,
+      #items-table td {
+        padding: 4px;
+        /* Reduz o padding em telas menores */
+      }
+
+      #items-table {
+        display: block;
+        /* Faz com que a tabela se comporte como um bloco */
+        overflow-x: auto;
+        /* Permite rolagem horizontal */
+        white-space: nowrap;
+        /* Garante que o texto não quebre em várias linhas */
+      }
+
+      #logo img {
+        max-width: 100px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="logo">
+    <img src="/logo/logotipo.png" alt="Logotipo">
+  </div>
+
+  <div class="container-form">
+    <button id="show-form-button" onclick="toggleForm()">
+      <img src="./icon/plus.png" alt="">
+      <span>
+        Adicionar Produto
+      </span>
+    </button>
+
+    <div id="modal-overlay" onclick="toggleForm()"></div>
+
+    <div id="product-form">
+      <form id="product-form-inner">
+        <fieldset>
+          <legend>Detalhes do Produto</legend>
+
+          <label for="descricao">Descrição:</label>
+          <input type="text" id="descricao" name="descricao" required><br>
+
+          <label for="valor-unidade">Valor por Unidade:</label>
+          <input type="number" id="valor-unidade" name="valor-unidade" step="0.01" required><br>
+
+          <label for="quantidade">Quantidade:</label>
+          <input type="number" id="quantidade" name="quantidade" required><br>
+
+          <label for="desconto">Desconto (%):</label>
+          <input type="number" id="desconto" name="desconto" step="0.01" value="0"><br>
+
+          <button type="button" onclick="addItem()">Adicionar Item</button>
+        </fieldset>
+      </form>
+    </div>
+
+    <div id="budget-title">Orçamento</div>
+
+    <table id="items-table">
+      <thead>
+        <tr>
+          <th>Descrição</th>
+          <th>Valor por Unidade</th>
+          <th>Quantidade</th>
+          <th>Desconto</th>
+          <th>R$</th>
+        </tr>
+      </thead>
+      <tbody id="items-body">
+        <!-- Itens serão adicionados aqui -->
+      </tbody>
+    </table>
+
+  </div>
+  <div class="container2">
+    <div id="total-container">
+      Valor Total: <span id="total-geral">R$ 0,00</span>
+    </div>
+    <button id="print-button" onclick="printBudget()">
+      <img src="/icon/printer.png" alt="">
+      <span>
+        Imprimir
+      </span>
+    </button>
+  </div>
+
+  <script>
+    let totalGeral = 0;
+
+    function formatCurrency(value) {
+      return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function updateTotalGeral(amount) {
+      totalGeral += amount;
+      document.getElementById('total-geral').innerText = formatCurrency(totalGeral);
+    }
+
+    function addItem() {
+      // Obtendo os valores dos campos do formulário
+      const descricao = document.getElementById('descricao').value;
+      const valorUnidade = parseFloat(document.getElementById('valor-unidade').value);
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const desconto = parseFloat(document.getElementById('desconto').value) / 100;
+
+      // Verifica se todos os campos estão preenchidos
+      if (!descricao || isNaN(valorUnidade) || isNaN(quantidade) || isNaN(desconto)) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+
+      // Calcula o total
+      const total = valorUnidade * quantidade;
+      const totalComDesconto = total * (1 - desconto);
+
+      // Atualiza o total geral
+      updateTotalGeral(totalComDesconto);
+
+      // Cria uma nova linha na tabela
+      const tableBody = document.getElementById('items-body');
+      const row = document.createElement('tr');
+
+      row.innerHTML = `
+        <td>${descricao}</td>
+        <td>${formatCurrency(valorUnidade)}</td>
+        <td>${quantidade}</td>
+        <td>${(desconto * 100).toFixed(2)}%</td>
+        <td>${formatCurrency(totalComDesconto)}</td>
+      `;
+
+      tableBody.appendChild(row);
+
+      // Limpa os campos do formulário
+      document.getElementById('product-form-inner').reset();
+      toggleForm(); // Fecha o formulário após adicionar o item
+    }
+
+    function printBudget() {
+      window.print();
+    }
+
+    function toggleForm() {
+      const form = document.getElementById('product-form');
+      const overlay = document.getElementById('modal-overlay');
+      const isVisible = form.style.display === 'block';
+      form.style.display = isVisible ? 'none' : 'block';
+      overlay.style.display = isVisible ? 'none' : 'block';
+    }
+  </script>
+</body>
+
+</html>
